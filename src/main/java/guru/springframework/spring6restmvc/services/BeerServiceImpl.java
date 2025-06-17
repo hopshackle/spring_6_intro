@@ -63,7 +63,7 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public List<Beer> listBeers(){
+    public List<Beer> listBeers() {
         return new ArrayList<>(beerMap.values());
     }
 
@@ -73,5 +73,23 @@ public class BeerServiceImpl implements BeerService {
         log.debug("Get Beer by Id - in service. Id: " + id.toString());
 
         return beerMap.get(id);
+    }
+
+    @Override
+    public Beer saveNewBeer(Beer beer) {
+        System.out.println("Saving new beer: " + beer);
+        Beer retValue = Beer.builder()
+                .id(UUID.randomUUID())
+                .version(1)
+                .beerName(beer.getBeerName())
+                .beerStyle(beer.getBeerStyle())
+                .upc(beer.getUpc())
+                .price(beer.getPrice())
+                .quantityOnHand(beer.getQuantityOnHand())
+                .createdDate(LocalDateTime.now())
+                .updateDate(LocalDateTime.now())
+                .build();
+        beerMap.put(retValue.getId(), retValue);
+        return retValue;
     }
 }
