@@ -3,6 +3,7 @@ package guru.springframework.spring6restmvc.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class Beer {
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID id;
+    @Version
     private Integer version;
     private String beerName;
     private BeerStyle beerStyle;

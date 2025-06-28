@@ -81,7 +81,7 @@ public class CustomerControllerTest {
                         .content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
-                .andExpect(header().string("Location", "/api/v1/customer/1"));
+                .andExpect(header().string("Location", "/api/v1/customer/0"));
 
         // doing this again would give the same location because we are mocking the service
         // so it always returns the same customer object (it is idempotent)
