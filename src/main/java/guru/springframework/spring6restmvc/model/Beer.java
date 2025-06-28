@@ -1,7 +1,12 @@
 package guru.springframework.spring6restmvc.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,7 +17,12 @@ import java.util.UUID;
  */
 @Builder
 @Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Beer {
+    @Id
+    @GeneratedValue(generator = "UUID")
     private UUID id;
     private Integer version;
     private String beerName;
