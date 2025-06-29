@@ -28,13 +28,11 @@ public class BeerController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Beer getBeerById(@PathVariable("id") UUID beerId){
-        log.debug("Get Beer by Id - in controller");
         return beerService.getBeerById(beerId);
     }
 
     @PostMapping
     public ResponseEntity<Beer> handlePost(@RequestBody Beer beer) {
-        log.debug("Handle Post - in controller");
         // Implementation for handling POST request
         Beer savedBeer = beerService.saveNewBeer(beer);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBeer);

@@ -39,7 +39,6 @@ public class CustomerControllerTest {
     // and hence BeerController is also loaded, which requires a BeerService bean
 
     @MockitoBean
-    @InjectMocks
     CustomerService customerService;
 
     @Test
