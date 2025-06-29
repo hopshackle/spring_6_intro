@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springframework.spring6restmvc.model.Customer;
 import guru.springframework.spring6restmvc.services.BeerService;
 import guru.springframework.spring6restmvc.services.CustomerService;
+import guru.springframework.spring6restmvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -13,11 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 // without specifying the specific class, the framework tries to load a BeerService too (and no Mock available?)
@@ -38,8 +39,8 @@ public class CustomerControllerTest {
     // and hence BeerController is also loaded, which requires a BeerService bean
 
     @MockitoBean
+    @InjectMocks
     CustomerService customerService;
-    // this will be a mock object
 
     @Test
     public void testGetCustomerById() throws Exception {
@@ -85,5 +86,22 @@ public class CustomerControllerTest {
 
         // doing this again would give the same location because we are mocking the service
         // so it always returns the same customer object (it is idempotent)
+    }
+
+    @Test
+    public void testUpdateCustomer() throws Exception {
+
+        CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
+        Customer existingCustomer = customerServiceImpl.getCustomerById(1);
+        existingCustomer.setName("Albert Einstein");
+
+        mockMvc.perform(put("/api/v1/customer/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(existingCustomer)))
+                .andExpect(status().isNoContent());
+        // No content means the update was successful, but no response body is returned
+
+        verify(customerService).patchCustomer(eq(1), any(Customer.class));
     }
 }

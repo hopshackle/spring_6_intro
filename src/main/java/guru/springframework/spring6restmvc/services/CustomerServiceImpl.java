@@ -43,4 +43,17 @@ public class CustomerServiceImpl implements CustomerService {
         customers.put(customer.getId(), savedCustomer);
         return customers.get(customer.getId());
     }
+
+    @Override
+    public Customer patchCustomer(int id, Customer customer) {
+        Customer existingCustomer = customers.get(id);
+        if (customer.getName() != null) {
+            existingCustomer.setName(customer.getName());
+        }
+        if (customer.getCreditLimit() != null) {
+            existingCustomer.setCreditLimit(customer.getCreditLimit());
+        }
+        existingCustomer.setModifiedDate(LocalDateTime.now());
+        return existingCustomer;
+    }
 }

@@ -45,14 +45,8 @@ public class CustomerController {
     @PutMapping("{id}")
     public ResponseEntity handleUpdate(@PathVariable("id") int id, @RequestBody Customer customer) {
 
-        Customer existingCustomer = customerService.getCustomerById(id);
-        if (customer.getName() != null) {
-            existingCustomer.setName(customer.getName());
-        }
-        if (customer.getCreditLimit() != null) {
-            existingCustomer.setCreditLimit(customer.getCreditLimit());
-        }
-        existingCustomer.setModifiedDate(LocalDateTime.now());
+        customerService.patchCustomer(id, customer);
+
         return ResponseEntity.status(NO_CONTENT).build();
     }
 }
