@@ -31,6 +31,6 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public Beer saveNewBeer(Beer beer) {
-        return null;
+        return repository.save(beer);
     }
 }

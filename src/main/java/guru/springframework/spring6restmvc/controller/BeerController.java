@@ -35,7 +35,10 @@ public class BeerController {
     public ResponseEntity<Beer> handlePost(@RequestBody Beer beer) {
         // Implementation for handling POST request
         Beer savedBeer = beerService.saveNewBeer(beer);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedBeer);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header("Location", "/api/v1/beer/" + savedBeer.getId().toString())
+                .build();
     }
 
 }
