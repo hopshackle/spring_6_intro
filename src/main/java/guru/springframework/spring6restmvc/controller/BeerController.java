@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 /**
@@ -22,23 +23,53 @@ public class BeerController {
     private final BeerService beerService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Beer> listBeers(){
+    public List<Beer> listBeers() {
         return beerService.listBeers();
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Beer getBeerById(@PathVariable("id") UUID beerId){
-        return beerService.getBeerById(beerId);
+    @GetMapping("{id}")
+    public ResponseEntity<Beer> getBeerById(@PathVariable("id") UUID beerId) {
+        try {
+            Beer beer = beerService.getBeerById(beerId);
+            return ResponseEntity.ok(beer);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
-    @PostMapping
-    public ResponseEntity<Beer> handlePost(@RequestBody Beer beer) {
+    @PostMapping()
+    public ResponseEntity handlePost(@RequestBody Beer beer) {
         // Implementation for handling POST request
         Beer savedBeer = beerService.saveNewBeer(beer);
+        if (savedBeer == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .header("Location", "/api/v1/beer/" + savedBeer.getId().toString())
                 .build();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity handlePut(@PathVariable("id") UUID beerId, @RequestBody Beer beer) {
+        try {
+            Beer updated = beerService.updateBeer(beerId, beer);
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .header("Location", "/api/v1/beer/" + updated.getId().toString())
+                    .build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity handleDelete(@PathVariable("id") UUID beerId) {
+        if (beerService.getBeerById(beerId) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        beerService.deleteBeer(beerId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

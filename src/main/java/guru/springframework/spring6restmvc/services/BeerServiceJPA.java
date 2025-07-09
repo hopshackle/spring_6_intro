@@ -33,4 +33,23 @@ public class BeerServiceJPA implements BeerService {
     public Beer saveNewBeer(Beer beer) {
         return repository.save(beer);
     }
+
+    @Override
+    public Beer updateBeer(UUID id, Beer beer) {
+        return repository.findById(id)
+                .map(existingBeer -> {
+                    existingBeer.setBeerName(beer.getBeerName());
+                    existingBeer.setBeerStyle(beer.getBeerStyle());
+                    existingBeer.setUpc(beer.getUpc());
+                    existingBeer.setPrice(beer.getPrice());
+                    existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
+                    return repository.save(existingBeer);
+                })
+                .orElseThrow(() -> new NoSuchElementException("Beer not found"));
+    }
+
+    @Override
+    public void deleteBeer(UUID id) {
+        repository.delete(repository.findById(id).orElseThrow(() -> new NoSuchElementException("Beer not found")));
+    }
 }

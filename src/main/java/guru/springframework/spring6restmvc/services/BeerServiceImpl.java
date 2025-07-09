@@ -92,4 +92,14 @@ public class BeerServiceImpl implements BeerService {
         beerMap.put(retValue.getId(), retValue);
         return retValue;
     }
+
+    @Override
+    public Beer updateBeer(UUID id, Beer beer) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public void deleteBeer(UUID id) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }
